@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Detection from Uploaded Video</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .video-frame {
+            display: inline-block;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-frame img {
+            width: 720px;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .controls {
+            margin-top: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button.red {
+            background-color: #e74c3c;
+        }
+
+        .button.red:hover {
+            background-color: #c0392b;
+        }
+
+        .detection-table {
+            margin-top: 40px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+        }
+
+        .detection-table th,
+        .detection-table td {
+            padding: 12px 16px;
+            border: 1px solid #ccc;
+        }
+
+        .detection-table th {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .detection-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📹 Live Detection from Uploaded Video</h2>
+
+    <div class="video-frame">
+        <img src="{{ url_for('uploaded_video_feed', filename=filename) }}" alt="Video Stream">
+    </div>
+
+    <div class="controls">
+        <button class="button red" onclick="clearDetections()">🗑 Clear Detections</button>
+        <a class="button" href="/">⬅ Back to Home</a>
+    </div>
+
+    <table class="detection-table" id="detection-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Confidence</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Filled by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchDetections() {
+            try {
+                const response = await fetch("/detections");
+                const data = await response.json();
+
+                const tableBody = document.getElementById("table-body");
+                tableBody.innerHTML = "";
+
+                data.forEach(detection => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${detection.name}</td>
+                        <td>${detection.confidence}%</td>
+                        <td>${detection.time}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching detections:", error);
+            }
+        }
+
+        async function clearDetections() {
+            try {
+                await fetch("/clear_detections", { method: "POST" });
+                fetchDetections();
+            } catch (error) {
+                alert("Failed to clear detections.");
+            }
+        }
+
+        setInterval(fetchDetections, 2000);
+        fetchDetections();
+    </script>
+
+</body>
+</html>

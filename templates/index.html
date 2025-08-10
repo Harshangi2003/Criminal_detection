@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Criminal Detection System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      background-color: #0f2027;
+    }
+
+    /* Splash Page */
+    .splash {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .splash video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.4);
+    }
+
+    .glass-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 50px 70px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: fadeIn 1.5s ease;
+    }
+
+    .glass-box h1 {
+      font-size: 3.2rem;
+      background: linear-gradient(45deg, #ff512f, #dd2476);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .enter-btn {
+      margin-top: 30px;
+      background: #f39c12;
+      border: none;
+      padding: 14px 36px;
+      font-size: 18px;
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .enter-btn:hover {
+      background-color: #e67e22;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dashboard */
+    #dashboard {
+      display: none;
+      padding: 60px 20px;
+    }
+
+    .dashboard-heading {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #00c3ff, #ffff1c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    .dashboard-subtext-glow {
+      font-size: 1.2rem;
+      text-align: center;
+      font-weight: 500;
+      background: linear-gradient(to right, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+      margin-bottom: 2rem;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #00f2fe, 0 0 20px #4facfe;
+      }
+      to {
+        text-shadow: 0 0 20px #00f2fe, 0 0 30px #4facfe;
+      }
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 10px #00c3ff; }
+      100% { text-shadow: 0 0 20px #ffff1c; }
+    }
+
+    .card-custom {
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: 0.3s ease;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .card-custom:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .icon {
+      font-size: 30px;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 5px #ffffffaa);
+    }
+
+    .btn-warning, .btn-info {
+      font-weight: 600;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    .file-input {
+      border-radius: 6px;
+      padding: 6px;
+      width: 100%;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 30px;
+      padding: 10px 25px;
+      border: 2px solid #00c3ff;
+      background-color: transparent;
+      color: #00c3ff;
+      font-weight: 600;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: 0.3s ease;
+      text-align: center;
+    }
+
+    .back-btn:hover {
+      background-color: #00c3ff;
+      color: #0f2027;
+      box-shadow: 0 0 12px #00c3ff;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .glass-box {
+        padding: 30px 20px;
+      }
+
+      .glass-box h1 {
+        font-size: 2.2rem;
+      }
+
+      .dashboard-heading {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash Page -->
+  <div class="splash" id="splash">
+    <video autoplay muted loop>
+      <source src="https://cdn.pixabay.com/video/2022/12/21/144040-785737470_large.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="glass-box">
+      <h1>🕵️ Criminal Detection AI</h1>
+      <button class="enter-btn" onclick="enterDashboard()">🚀 Start</button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="container py-5">
+    <div class="text-center">
+      <a class="back-btn" onclick="goBack()">🔙 Back </a>
+    </div>
+    <h2 class="dashboard-heading">📊 Detection Control Panel</h2>
+    <p class="dashboard-subtext-glow">✨ Choose a method to begin ✨</p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+      <!-- Webcam -->
+      <div class="col d-flex justify-content-center">
+        <div class="card card-custom text-white w-100" style="max-width: 400px;">
+          <div class="card-body d-flex flex-column h-100">
+            <div>
+              <h4 class="card-title text-warning"><span class="icon">🎥</span> Live Webcam Detection</h4>
+              
+              <ul class="small mt-3" style="list-style: none; padding-left: 0;">
+              
+              </ul>
+            </div>
+            <a href="/webcam" class="btn btn-warning mt-auto w-100">Start Webcam Detection</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="col d-flex justify-content-center">
+        <div class="card card-custom text-white w-100" style="max-width: 400px;">
+          <div class="card-body d-flex flex-column h-100">
+            <div>
+              <h4 class="card-title text-info"><span class="icon">📁</span> Upload Video File</h4>
+              
+            </div>
+            <form action="/upload" method="post" enctype="multipart/form-data" class="mt-3">
+              <input type="file" name="video" accept="video/*" required class="form-control mb-3 file-input">
+              <button type="submit" class="btn btn-info w-100">Upload & Detect</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-5">
+    
+    </footer>
+  </div>
+
+  <script>
+    function enterDashboard() {
+      document.getElementById("splash").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+    }
+
+    function goBack() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("splash").style.display = "flex";
+    }
+  </script>
+
+</body>
+</html>
+
+</html>
